@@ -871,11 +871,8 @@ start:
   //    pop the oldest one from the list. This only requires 1x read per height instead
   //    of doing 735 (DIFFICULTY_BLOCKS_COUNT).
   bool check = false;
-<<<<<<< HEAD
-=======
   if (m_reset_timestamps_and_difficulties_height)
     m_timestamps_and_difficulties_height = 0;
->>>>>>> 40674ec3ae7cff108c40dfb13bd4591a54dce543
   if (m_timestamps_and_difficulties_height != 0 && ((height - m_timestamps_and_difficulties_height) == 1) && m_timestamps.size() >= DIFFICULTY_BLOCKS_COUNT)
   {
     uint64_t index = height - 1;
