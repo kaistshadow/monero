@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2019, The Monero Project
+# Copyright (c) 2014-2020, The Monero Project
 #
 # All rights reserved.
 #
@@ -109,6 +109,7 @@ target_link_libraries(unit_tests
     cryptonote_protocol
     cryptonote_core
     daemon_messages
+    daemon_rpc_server
     blockchain_db
     lmdb_lib
     rpc

@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2019, The Monero Project
+// Copyright (c) 2014-2020, The Monero Project
 //
 // All rights reserved.
 //
@@ -160,7 +160,7 @@ struct txpool_tx_meta_t
   uint64_t max_used_block_height;
   uint64_t last_failed_height;
   uint64_t receive_time;
-  uint64_t last_relayed_time; //!< If Dandelion++ stem, randomized embargo timestamp. Otherwise, last relayed timestmap.
+  uint64_t last_relayed_time; //!< If received over i2p/tor, randomized forward time. If Dandelion++stem, randomized embargo time. Otherwise, last relayed timestamp
   // 112 bytes
   uint8_t kept_by_block;
   uint8_t relayed;
@@ -169,7 +169,8 @@ struct txpool_tx_meta_t
   uint8_t pruned: 1;
   uint8_t is_local: 1;
   uint8_t dandelionpp_stem : 1;
-  uint8_t bf_padding: 4;
+  uint8_t is_forwarding: 1;
+  uint8_t bf_padding: 3;
 
   uint8_t padding[76]; // till 192 bytes
 
@@ -1037,6 +1038,16 @@ public:
    * @return the difficulty
    */
   virtual difficulty_type get_block_difficulty(const uint64_t& height) const = 0;
+
+  /**
+   * @brief correct blocks cumulative difficulties that were incorrectly calculated due to the 'difficulty drift' bug
+   *
+   * If the block does not exist, the subclass should throw BLOCK_DNE
+   *
+   * @param start_height the height where the drift starts
+   * @param new_cumulative_difficulties new cumulative difficulties to be stored
+   */
+  virtual void correct_block_cumulative_difficulties(const uint64_t& start_height, const std::vector<difficulty_type>& new_cumulative_difficulties) = 0;
 
   /**
    * @brief fetch a block's already generated coins
