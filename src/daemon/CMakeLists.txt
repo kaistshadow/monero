@@ -25,7 +25,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../shadow/cmake") # Path for ShadowTool Module
+include(ShadowTools) # load ShadowTools Module
 set(daemon_sources
   command_parser_executor.cpp
   command_server.cpp
@@ -64,7 +65,7 @@ set(daemon_private_headers
 
 monero_private_headers(daemon
   ${daemon_private_headers})
-monero_add_executable(daemon
+add_shadow_plugin(daemon
   ${daemon_sources}
   ${daemon_headers}
   ${daemon_private_headers})
