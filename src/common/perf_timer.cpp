@@ -59,11 +59,11 @@ namespace tools
     uint64_t t0 = epee::misc_utils::get_ns_count(), t1;
     uint64_t r0 = get_tick_count();
 
-    while (1)
-    {
-      t1 = epee::misc_utils::get_ns_count();
-      if (t1 - t0 > 1*1000000000) break; // work one second
-    }
+    // while (1)
+    // {
+    //   t1 = epee::misc_utils::get_ns_count();
+    //   if (t1 - t0 > 1*1000000000) break; // work one second
+    // }
 
     uint64_t r1 = get_tick_count();
     uint64_t tpns256 = 256 * (r1 - r0) / (t1 - t0);
