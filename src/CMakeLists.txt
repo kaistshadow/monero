@@ -28,6 +28,18 @@
 #
 # Parts of this file are originally copyright (c) 2012-2013 The Cryptonote developers
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../../cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../../Install/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../../shadow/cmake")
+include(ShadowTools) # load ShadowTools Module
+
+find_package(OpenSSL_1_1_0h REQUIRED)
+
+if (NOT CMAKE_INSTALL_PREFIX OR
+    CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
+  set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/../../../../Install")
+endif()
+
 if (WIN32 OR STATIC)
   add_definitions(-DSTATICLIB)
   # miniupnp changed their static define
@@ -77,6 +89,19 @@ function (monero_add_executable name)
   enable_stack_trace("${name}")
 endfunction ()
 
+function (shadow_add_executable name)
+  source_group("${name}"
+    FILES
+      ${ARGN})
+  add_shadow_plugin("${name}" 
+    ${ARGN})
+  target_link_libraries("${name}"
+    PRIVATE
+      ${EXTRA_LIBRARIES}    
+      OpenSSL_1_1_0h::Crypto OpenSSL_1_1_0h::SSL)
+  set_property(TARGET "${name}" PROPERTY LIBRARY_OUTPUT_DIRECTORY "${CMAKE_INSTALL_PREFIX}/plugins")     
+endfunction ()
+
 function (monero_add_library name)
     monero_add_library_with_deps(NAME "${name}" SOURCES ${ARGN})
 endfunction()
@@ -92,10 +117,15 @@ function (monero_add_library_with_deps)
   set(objlib obj_${MONERO_ADD_LIBRARY_NAME})
   add_library(${objlib} OBJECT ${MONERO_ADD_LIBRARY_SOURCES})
   add_library("${MONERO_ADD_LIBRARY_NAME}" $<TARGET_OBJECTS:${objlib}>)
+  #target_link_libraries("${MONERO_ADD_LIBRARY_NAME}"
+  #  PRIVATE
+  #    OpenSSL_1_1_0h::Crypto OpenSSL_1_1_0h::SSL)     
   if (MONERO_ADD_LIBRARY_DEPENDS)
     add_dependencies(${objlib} ${MONERO_ADD_LIBRARY_DEPENDS})
   endif()
   set_property(TARGET "${MONERO_ADD_LIBRARY_NAME}" PROPERTY FOLDER "libs")
+  set_property(TARGET "${MONERO_ADD_LIBRARY_NAME}" PROPERTY DEBUG_POSTFIX "d")   
+
   target_compile_definitions(${objlib}
     PRIVATE $<TARGET_PROPERTY:${MONERO_ADD_LIBRARY_NAME},INTERFACE_COMPILE_DEFINITIONS>)
 endfunction ()

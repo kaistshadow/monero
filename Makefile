@@ -50,9 +50,10 @@ depends:
 	cd contrib/depends && $(MAKE) HOST=$(target) && cd ../.. && mkdir -p build/$(target)/release
 	cd build/$(target)/release && cmake -DCMAKE_TOOLCHAIN_FILE=$(CURDIR)/contrib/depends/$(target)/share/toolchain.cmake ../../.. && $(MAKE)
 
+#-D CMAKE_VERBOSE_MAKEFILE=ON
 cmake-debug:
 	mkdir -p $(builddir)/debug
-	cd $(builddir)/debug && cmake -D CMAKE_BUILD_TYPE=Debug $(topdir)
+	cd $(builddir)/debug && cmake -D CMAKE_BUILD_TYPE=Debug -D CMAKE_VERBOSE_MAKEFILE=ON $(topdir)
 
 debug: cmake-debug
 	cd $(builddir)/debug && $(MAKE)
@@ -100,7 +101,7 @@ release-test:
 
 release-all:
 	mkdir -p $(builddir)/release
-	cd $(builddir)/release && cmake -D BUILD_TESTS=ON -D CMAKE_BUILD_TYPE=release $(topdir) && $(MAKE)
+	cd $(builddir)/release && cmake -D BUILD_TESTS=ON -D CMAKE_BUILD_TYPE=release -D CMAKE_VERBOSE_MAKEFILE=ON $(topdir) && $(MAKE)
 
 release-static:
 	mkdir -p $(builddir)/release
