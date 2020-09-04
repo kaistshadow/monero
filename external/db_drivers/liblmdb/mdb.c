@@ -5326,7 +5326,7 @@ mdb_env_setup_locks(MDB_env *env, MDB_name *fname, int mode, int *excl)
 			goto fail;
 		rc = pthread_mutexattr_setpshared(&mattr, PTHREAD_PROCESS_SHARED);
 #ifdef MDB_ROBUST_SUPPORTED
-		if (!rc) rc = pthread_mutexattr_setrobust(&mattr, PTHREAD_MUTEX_ROBUST);
+		//if (!rc) rc = pthread_mutexattr_setrobust(&mattr, PTHREAD_MUTEX_ROBUST);
 #endif
 		if (!rc) rc = pthread_mutex_init(env->me_txns->mti_rmutex, &mattr);
 		if (!rc) rc = pthread_mutex_init(env->me_txns->mti_wmutex, &mattr);
