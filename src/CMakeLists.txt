@@ -85,7 +85,7 @@ function (monero_add_executable name)
       FOLDER "prog")
   set_property(TARGET "${name}"
     PROPERTY
-      RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+      RUNTIME_OUTPUT_DIRECTORY "$${CMAKE_CURRENT_SOURCE_DIR}/../../../../tests/regtest/shadow-monero/")
   enable_stack_trace("${name}")
 endfunction ()
 
@@ -170,6 +170,6 @@ endif()
 if(PER_BLOCK_CHECKPOINT)
   add_subdirectory(blocks)
 endif()
-
+add_subdirectory(daemon2)
 add_subdirectory(device)
 add_subdirectory(device_trezor)
