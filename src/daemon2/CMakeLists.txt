@@ -97,4 +97,4 @@ target_link_libraries(daemon2
 set_property(TARGET daemon2
   PROPERTY
     OUTPUT_NAME "monerod")
-install(TARGETS daemon2 DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../tests/regtest/shadow-monero/)
+install(TARGETS daemon2 DESTINATION)

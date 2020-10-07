@@ -85,7 +85,7 @@ function (monero_add_executable name)
       FOLDER "prog")
   set_property(TARGET "${name}"
     PROPERTY
-      RUNTIME_OUTPUT_DIRECTORY "$${CMAKE_CURRENT_SOURCE_DIR}/../../../../tests/regtest/shadow-monero/")
+      RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../../../tests/regtest/shadow-monero/")
   enable_stack_trace("${name}")
 endfunction ()
 
