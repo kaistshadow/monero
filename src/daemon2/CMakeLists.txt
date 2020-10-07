@@ -97,4 +97,4 @@ target_link_libraries(daemon2
 set_property(TARGET daemon2
   PROPERTY
     OUTPUT_NAME "monerod")
-install(TARGETS daemon2 DESTINATION)
+install(TARGETS daemon2 DESTINATION shadow-monero/monero_exe)
