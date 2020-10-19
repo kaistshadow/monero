@@ -109,3 +109,5 @@ nbproject
 /testnet
 
 __pycache__/
+
+src/device_trezor/trezor/tools/py2backports/
