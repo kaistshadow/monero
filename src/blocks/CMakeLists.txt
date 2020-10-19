@@ -26,6 +26,8 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+include_directories(../../external/rapidjson/include ../../external/easylogging++ ../../src ../../contrib/epee/include external)
+
 set(GENERATED_SOURCES "")
 
 foreach(BLOB_NAME checkpoints testnet_blocks stagenet_blocks)

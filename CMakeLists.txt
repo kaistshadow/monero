@@ -300,7 +300,7 @@ endif()
 # elseif(CMAKE_SYSTEM_NAME MATCHES ".*BSDI.*")
 #   set(BSDI TRUE)
 
-include_directories(external/rapidjson/include external/easylogging++ src contrib/epee/include external)
+include_directories(external/rapidjson/include external/easylogging++ src contrib/epee/include external external/randomx/src/)
 
 if(APPLE)
   include_directories(SYSTEM /usr/include/malloc)
@@ -317,9 +317,9 @@ endif()
 option(STATIC "Link libraries statically" ${DEFAULT_STATIC})
 
 # This is a CMake built-in switch that concerns internal libraries
-if (NOT DEFINED BUILD_SHARED_LIBS AND NOT STATIC AND CMAKE_BUILD_TYPE_LOWER STREQUAL "debug")
+#if (NOT DEFINED BUILD_SHARED_LIBS AND NOT STATIC AND CMAKE_BUILD_TYPE_LOWER STREQUAL "debug")
     set(BUILD_SHARED_LIBS ON)
-endif()
+#endif()
 
 if (BUILD_SHARED_LIBS)
   message(STATUS "Building internal libraries with position independent code")
@@ -456,35 +456,35 @@ ExternalProject_Add(generate_translations_header
   CMAKE_ARGS -DLRELEASE_PATH=${LRELEASE_PATH}
   INSTALL_COMMAND cmake -E echo "")
 include_directories("${CMAKE_CURRENT_BINARY_DIR}/translations")
-add_subdirectory(external)
+## add_subdirectory(external)
 
 # Final setup for libunbound
-include_directories(${UNBOUND_INCLUDE})
-link_directories(${UNBOUND_LIBRARY_DIRS})
+# include_directories(${UNBOUND_INCLUDE})
+# link_directories(${UNBOUND_LIBRARY_DIRS})
 
 # Final setup for easylogging++
-include_directories(${EASYLOGGING_INCLUDE})
-link_directories(${EASYLOGGING_LIBRARY_DIRS})
+# include_directories(${EASYLOGGING_INCLUDE})
+# link_directories(${EASYLOGGING_LIBRARY_DIRS})
 
 # Final setup for liblmdb
-include_directories(${LMDB_INCLUDE})
+# include_directories(${LMDB_INCLUDE})
 
 # Final setup for libunwind
-include_directories(${LIBUNWIND_INCLUDE})
-link_directories(${LIBUNWIND_LIBRARY_DIRS})
+# include_directories(${LIBUNWIND_INCLUDE})
+# link_directories(${LIBUNWIND_LIBRARY_DIRS})
 
 # Final setup for hid
-if (HIDAPI_FOUND) 
-  message(STATUS "Using HIDAPI include dir at ${HIDAPI_INCLUDE_DIR}")
-  add_definitions(-DHAVE_HIDAPI)
-  include_directories(${HIDAPI_INCLUDE_DIR})
-  link_directories(${LIBHIDAPI_LIBRARY_DIRS})
-else (HIDAPI_FOUND)
-  message(STATUS "Could not find HIDAPI")
-endif()
+#if (HIDAPI_FOUND) 
+#  message(STATUS "Using HIDAPI include dir at ${HIDAPI_INCLUDE_DIR}")
+#  add_definitions(-DHAVE_HIDAPI)
+#  include_directories(${HIDAPI_INCLUDE_DIR})
+#  link_directories(${LIBHIDAPI_LIBRARY_DIRS})
+#else (HIDAPI_FOUND)
+#  message(STATUS "Could not find HIDAPI")
+#endif()
 
 # Trezor support check
-include(CheckTrezor)
+#include(CheckTrezor)
 
 if(MSVC)
   add_definitions("/bigobj /MP /W3 /GS- /D_CRT_SECURE_NO_WARNINGS /wd4996 /wd4345 /D_WIN32_WINNT=0x0600 /DWIN32_LEAN_AND_MEAN /DGTEST_HAS_TR1_TUPLE=0 /FIinline_c.h /D__SSE4_1__")
@@ -974,13 +974,13 @@ if(SODIUM_LIBRARY)
   set(ZMQ_LIB "${ZMQ_LIB};${SODIUM_LIBRARY}")
 endif()
 
-add_subdirectory(contrib)
+## add_subdirectory(contrib)
 add_subdirectory(src)
 
 find_package(PythonInterp)
 if(BUILD_TESTS)
   message(STATUS "Building tests")
-  add_subdirectory(tests)
+  # add_subdirectory(tests)
 else()
   message(STATUS "Not building tests")
 endif()

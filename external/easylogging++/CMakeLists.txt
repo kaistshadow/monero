@@ -27,8 +27,19 @@
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 cmake_minimum_required(VERSION 2.8.7)
-
 project(easylogging CXX)
+
+## Add Parent Rule Copy 
+# This is a CMake built-in switch that concerns internal libraries
+set(BUILD_SHARED_LIBS ON)
+
+if (BUILD_SHARED_LIBS)
+  message(STATUS "Building internal libraries with position independent code")
+  add_definitions("-DBUILD_SHARED_LIBS")
+else()
+  message(STATUS "Building internal libraries as static")
+endif()
+
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 

@@ -26,6 +26,29 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+include_directories(../../../external/rapidjson/include ../../../external/easylogging++ ../../../src ../../../contrib/epee/include external)
+list(INSERT CMAKE_MODULE_PATH 0
+  "${CMAKE_SOURCE_DIR}/../../../cmake")
+option(USE_READLINE "Build with GNU readline support." ON)
+if(USE_READLINE AND NOT DEPENDS)
+  find_package(Readline)
+  if(READLINE_FOUND AND GNU_READLINE_FOUND)
+    add_definitions(-DHAVE_READLINE)
+    include_directories(${Readline_INCLUDE_DIR})
+    message(STATUS "Found readline library at: ${Readline_ROOT_DIR}")
+    set(EPEE_READLINE epee_readline)
+  else()
+    message(STATUS "Could not find GNU readline library so building without readline support")
+  endif()
+elseif(USE_READLINE AND DEPENDS AND NOT MINGW)
+  find_path(Readline_INCLUDE_PATH readline/readline.h)
+  find_library(Readline_LIBRARY readline)
+  find_library(Terminfo_LIBRARY tinfo)
+  set(Readline_LIBRARY "${Readline_LIBRARY};${Terminfo_LIBRARY}")
+  set(GNU_READLINE_LIBRARY ${Readline_LIBRARY})
+  add_definitions(-DHAVE_READLINE)
+  set(EPEE_READLINE epee_readline)
+endif()
 
 add_library(epee STATIC byte_slice.cpp byte_stream.cpp hex.cpp abstract_http_client.cpp http_auth.cpp mlog.cpp net_helper.cpp net_utils_base.cpp string_tools.cpp
     wipeable_string.cpp levin_base.cpp memwipe.c connection_basic.cpp network_throttle.cpp network_throttle-detail.cpp mlocker.cpp buffer.cpp net_ssl.cpp
