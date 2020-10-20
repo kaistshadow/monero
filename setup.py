@@ -1,6 +1,9 @@
 from distutils.command.build_ext import build_ext
 from distutils.core import setup, Extension
 import os
+import shutil
+
+import command as cmd
 
 # monero src/damon object compile options
 LIST_CPP_INCLUDE_DIRS = ['/usr/local/include','./external/rapidjson/include','./external/easylogging++','./src','./contrib/epee/include','./external','./external/supercop/include','./build/debug/generated_include','./build/debug/translations','./external/db_drivers/liblmdb','./external/miniupnp/miniupnpc/']
@@ -14,11 +17,18 @@ LIST_CC1_EXTRA_SPECIFIC_WARNING = ['-Wno-error=extra','-Wno-error=deprecated-dec
 LIST_AS_EXTRA_MACHINE = ['-march=native','-maes','-mmitigate-rop']  #default define ['-pthread']
 #LIST_LD_EXTRA_LINKER = ['-shared']
 WD = os.getcwd()
+LIBPAHTS = WD+"/build/temp.linux-x86_64-2.7/libs"
 
 def exec_shell_cmd(cmd):
     if os.system(cmd) != 0:
         print("error while executing '%s'" % cmd)
         exit(-1)
+
+def install_files(lists):
+    for li in lists:
+        path = os.path.split(li)
+        if os.path.isfile(li):
+            shutil.copy(li, LIBPAHTS+"/"+path[1])
 
 def create_external_libs():
     # external libs are consist of subtrees('db_drivers','easylogging++'), submodues('unbound','miniupnp/miniupnpc','randomx') and the source code('rapidjson','trezor-common') used only for include   
@@ -30,7 +40,10 @@ def create_external_libs():
             else:
                 exec_shell_cmd("cd %s/%s && mkdir build && cd build && cmake .. && make" % (WD+"/external", module))  
         else:
-            exec_shell_cmd("cd %s/%s && ./configure && make" % (WD+"/external", module))
+            exec_shell_cmd("cd %s/%s && ./configure && make" % (WD+"/external", module))            
+
+    lists = ["./external/unbound/.libs/libunbound.so","./external/db_drivers/build/liblmdb/liblmdb.so","./external/easylogging++/build/libeasylogging.so","./external/randomx/build/librandomx.so","./external/miniupnp/miniupnpc/build/libminiupnpc.a"]
+    install_files(lists)
 
 def create_static_libs():
     # libminiupnpc.a has already been created by 'create_external_libs'.
@@ -40,6 +53,8 @@ def create_static_libs():
             exec_shell_cmd("cd %s && cd build && cmake .. && make" % (WD+module))
         else:
             exec_shell_cmd("cd %s && mkdir build && cd build && cmake .. && make" % (WD+module))
+    lists = ["./contrib/epee/src/build/libepee.a","./contrib/epee/src/build/libepee_readline.a","./src/blocks/build/libblocks.a"]
+    install_files(lists)
 
 def create_shared_libs():    
     # In monerod, a total of 24 shared libraries are linked, 4 of which were previously installed as external libs.
@@ -49,10 +64,30 @@ def create_shared_libs():
 
     # modules = ['/src','/src/hardforks','/src/crypto','/src/common','/src/ringct/libringct_basicd.so','/src/checkpoints','/src/net','/src/rpc/librpc_based.so','/src/daemonizer','/src/device','/src/cryptonote_basic','/src/ringct/libringctd.so','/src/multisig','/src/blockchain_db','/src/cryptonote_core','/src/p2p','/src/cryptonote_protocol','/src/rpc/librpcd.so','/src/serializat','/src/rpc/libdaemon_messagesd.so','/src/rpc/libdaemon_rpc_serverd.so'] # Number of modules : 21 (24-4+1=21)
     
-    if os.path.exists(WD+"/build"):
-        exec_shell_cmd("cd %s && cd build && cmake .. && make" % (WD))
-    else:
-        exec_shell_cmd("cd %s && mkdir build && cd build && cmake .. && make" % (WD))        
+    modules = ['libversion','/src/hardforks','/src/crypto','/src/common','/src/ringct/libringct_basicd.so','/src/checkpoints','/src/net','/src/rpc/librpc_based.so'] #15
+    #modules2 = ['/src/ringct/libringct_basicd.so','/src/rpc/librpc_based.so','/src/ringct/libringctd.so','/src/rpc/librpcd.so','/src/rpc/libdaemon_messagesd.so','/src/rpc/libdaemon_rpc_serverd.so'] # 6
+    for module in modules:
+        size = len(module.split('.')) 
+        if size > 1:
+            #print(module.split('.')[1])
+            pth = os.path.split(module)[0]
+            name = os.path.split(module)[1]
+            if os.path.exists(WD+pth+"/build"):
+                exec_shell_cmd("cd %s && cd build && cmake .. && make" % (WD+pth))                
+            else:
+                exec_shell_cmd("cd %s && mkdir build && cd build && cmake .. && make" % (WD+pth))             
+        else:
+            #print(text.split('.')[0])        
+            if module =='libversion':
+                if os.path.exists(WD+"/build"):
+                    exec_shell_cmd("cd %s && cd build && cmake .. && make" % (WD))
+                else:
+                    exec_shell_cmd("cd %s && mkdir build && cd build && cmake .. && make" % (WD))
+            else:
+                if os.path.exists(WD+module+"/build"):
+                    exec_shell_cmd("cd %s && cd build && cmake .. && make" % (WD+module))                
+                else:
+                    exec_shell_cmd("cd %s && mkdir build && cd build && cmake .. && make" % (WD+module))            
 
 def cmd_ex(command_subclass):
     orig_ext = command_subclass.build_extension
@@ -126,27 +161,103 @@ object6 = Extension('libOBJECT6',
                     extra_compile_args = LIST_CC1_EXTRA_CLANG+LIST_CC1_EXTRA_OPT+LIST_CC1_EXTRA_DEBUG+LIST_CC1_EXTRA_WARNING+LIST_CC1_EXTRA_SPECIFIC_WARNING+LIST_AS_EXTRA_MACHINE,
                     sources = ['./src/daemon/rpc_command_executor.cpp'])
 
+# ----------------------------------------------------------------------------------
 # setup (name = 'ObjectFiles',
 #        version = '1.0',
 #        description = 'Monero Damon Object Files',
 #        author = 'Victork',
 #        cmdclass = {'build_ext': build_ext_ex},
 #        ext_modules = [object1,object2,object3,object4,object5,object6])
+# ----------------------------------------------------------------------------------
 
+# ----------------------------------------------------------------------------------------------
+# python shell           : exec_shell_cmd("cd %s && " % (WD))
+# Install path           : ./build/temp.linux-x86_64-2.7/libs/
 
-def create_objects(paths):
-    print("--creating objects...")
+# object code ----------------------------------------------------------------------------------
+# 1.delete                      : `cd /home/mong/source/monero/build/Linux/master/debug/src/common && `
+# 2.replace incldue path        : `/home/mong/source/monero` -> `.`
+# 3.delete                      : `-I./build/Linux/master/debug/generated_include`
+# 4.replace                     : `-I./build/Linux/master/debug/translations` -> `-I./src/translations`
+# 5.replace object install path : `CMakeFiles/obj_common.dir` -> `source code location`
 
+# shared object code ---------------------------------------------------------------------------
+# 1.replace install path        : `-o *.so` -> `-o ./build/temp.linux-x86_64-2.7/libs/*.so`
+# 2.replace object path         : `CMakeFiles/obj_common.dir` -> `source code location`
+# 3.replace rpath               : `-Wl,-rpath,/home/victor/CLionProjects/~~~~` -> `-Wl,-rpath,/build/temp.linux-x86_64-2.7/libs`
+# ----------------------------------------------------------------------------------
 
 if __name__ == '__main__':
     print ("-------------------------------------------------------------")
     print ("To compile monerod, the following file needs to be created.\n--1.Creating Object Files(6)\n--2.Creating Dependent Static libraries(4)\n--3.Creating Shared libraries(25)")
     print ("-------------------------------------------------------------")
     #exec_shell_cmd("git submodule update --init")
+    if not os.path.exists(LIBPAHTS):
+                exec_shell_cmd("cd %s && mkdir -p %s" % (WD, LIBPAHTS))
+
 
     #create_external_libs()
-    #create_static_libs()
-    create_shared_libs()
+    #create_static_libs()    
+    # 1. ../../external/easylogging++/libeasylogging.so 
+    # 2. ../../external/randomx/librandomx.so 
+    cmd.gcc_command03("3.libversion.so")
+    cmd.gcc_command04("4.libhardforksd.so")
+    cmd.gcc_command05("5.libcncryptod.so")
+    cmd.gcc_command06("6.libcommond.so")
+    cmd.gcc_command07("7.libringct_basicd.so")
+    cmd.gcc_command08("8.libcheckpointsd.so")
+    cmd.gcc_command09("9.libnetd.so")
+    cmd.gcc_command10("10.librpc_based.so")
+    cmd.gcc_command11("11.libdaemonizerd.so")
+    cmd.gcc_command12("12.libdeviced.so")    #------------------------> object 2, not existed
+    cmd.gcc_command13("13.libcryptonote_basicd.so")   #rpath-link
+    cmd.gcc_command14("14.libringctd.so")
+    cmd.gcc_command15("15.libmultisigd.so")
+    cmd.gcc_command16("16.libblockchain_dbd.so")
+    cmd.gcc_command17("17.libcryptonote_cored.so")
+    cmd.gcc_command18("18.libp2pd.so")
+    cmd.gcc_command19("19.libcryptonote_protocold.so")
+    cmd.gcc_command20("20.librpcd.so")
+    cmd.gcc_command21("21.libserializationd.so")
+    cmd.gcc_command22("22.libdaemon_messagesd.so")
+    cmd.gcc_command23("23.libdaemon_rpc_serverd.so")
+    cmd.gcc_command_monero("libmonerod.so")
+
+    #create_external_libs()
+    #create_static_libs()    
+    # 1. ../../external/easylogging++/libeasylogging.so 
+    # 2. ../../external/randomx/librandomx.so 
+    #cmd.gcc_command03("3.libversion.so")
+    #cmd.gcc_command04("4.libhardforksd.so")
+    #cmd.gcc_command05("5.libcncryptod.so")
+    #cmd.gcc_command06("6.libcommond.so")
+    #cmd.gcc_command07("7.libringct_basicd.so")
+    #cmd.gcc_command08("8.libcheckpointsd.so")
+    #cmd.gcc_command09("9.libnetd.so")
+    #cmd.gcc_command10("10.librpc_based.so")
+    #cmd.gcc_command11("11.libdaemonizerd.so")
+    #cmd.gcc_command12("12.libdeviced.so")    #------------------------> object 2, not existed
+    #cmd.gcc_command13("13.libcryptonote_basicd.so")   #rpath-link
+    #cmd.gcc_command14("14.libringctd.so")
+    #cmd.gcc_command15("15.libmultisigd.so")
+    #cmd.gcc_command16("16.libblockchain_dbd.so")
+    #cmd.gcc_command17("17.libcryptonote_cored.so")
+    #cmd.gcc_command18("18.libp2pd.so")
+    #cmd.gcc_command19("19.libcryptonote_protocold.so")
+    #cmd.gcc_command20("20.librpcd.so")
+    #cmd.gcc_command21("21.libserializationd.so")
+    #cmd.gcc_command22("22.libdaemon_messagesd.so")
+    #cmd.gcc_command23("23.libdaemon_rpc_serverd.so")
+    #cmd.gcc_command_monero("libmonerod.so")
+
+
+
+
+
+
+
+      
+
 
 
 
