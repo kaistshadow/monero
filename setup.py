@@ -199,56 +199,29 @@ if __name__ == '__main__':
     #create_external_libs()
     #create_static_libs()    
     # 1. ../../external/easylogging++/libeasylogging.so 
-    # 2. ../../external/randomx/librandomx.so 
-    cmd.gcc_command03("3.libversion.so")
-    cmd.gcc_command04("4.libhardforksd.so")
-    cmd.gcc_command05("5.libcncryptod.so")
-    cmd.gcc_command06("6.libcommond.so")
-    cmd.gcc_command07("7.libringct_basicd.so")
-    cmd.gcc_command08("8.libcheckpointsd.so")
-    cmd.gcc_command09("9.libnetd.so")
-    cmd.gcc_command10("10.librpc_based.so")
-    cmd.gcc_command11("11.libdaemonizerd.so")
-    cmd.gcc_command12("12.libdeviced.so")    #------------------------> object 2, not existed
-    cmd.gcc_command13("13.libcryptonote_basicd.so")   #rpath-link
-    cmd.gcc_command14("14.libringctd.so")
-    cmd.gcc_command15("15.libmultisigd.so")
-    cmd.gcc_command16("16.libblockchain_dbd.so")
-    cmd.gcc_command17("17.libcryptonote_cored.so")
-    cmd.gcc_command18("18.libp2pd.so")
-    cmd.gcc_command19("19.libcryptonote_protocold.so")
-    cmd.gcc_command20("20.librpcd.so")
-    cmd.gcc_command21("21.libserializationd.so")
-    cmd.gcc_command22("22.libdaemon_messagesd.so")
-    cmd.gcc_command23("23.libdaemon_rpc_serverd.so")
+    # 2. ../../external/randomx/librandomx.so # you must add 'SHARED' options randomx's cmake(ex. add_library(randomx SHARED ) 
+    # cmd.gcc_command03("3.libversion.so") # CMake add version information and make file "version.cpp", so you need to copy(file).
+    # cmd.gcc_command04("4.libhardforksd.so")
+    # cmd.gcc_command05("5.libcncryptod.so")
+    # cmd.gcc_command06("6.libcommond.so")  # CMake make "src/translations", so you need to copy(folder).
+    # cmd.gcc_command07("7.libringct_basicd.so")
+    # cmd.gcc_command08("8.libcheckpointsd.so")
+    # cmd.gcc_command09("9.libnetd.so")
+    # cmd.gcc_command10("10.librpc_based.so")
+    # cmd.gcc_command11("11.libdaemonizerd.so")
+    # cmd.gcc_command12("12.libdeviced.so")    #------------------------> object 2, not existed
+    # cmd.gcc_command13("13.libcryptonote_basicd.so")   #rpath-link
+    # cmd.gcc_command14("14.libringctd.so")
+    # cmd.gcc_command15("15.libmultisigd.so")
+    # cmd.gcc_command16("16.libblockchain_dbd.so")
+    # cmd.gcc_command17("17.libcryptonote_cored.so")
+    # cmd.gcc_command18("18.libp2pd.so")
+    # cmd.gcc_command19("19.libcryptonote_protocold.so")
+    # cmd.gcc_command20("20.librpcd.so")
+    # cmd.gcc_command21("21.libserializationd.so")
+    # cmd.gcc_command22("22.libdaemon_messagesd.so")
+    # cmd.gcc_command23("23.libdaemon_rpc_serverd.so")
     cmd.gcc_command_monero("libmonerod.so")
-
-    #create_external_libs()
-    #create_static_libs()    
-    # 1. ../../external/easylogging++/libeasylogging.so 
-    # 2. ../../external/randomx/librandomx.so 
-    #cmd.gcc_command03("3.libversion.so")
-    #cmd.gcc_command04("4.libhardforksd.so")
-    #cmd.gcc_command05("5.libcncryptod.so")
-    #cmd.gcc_command06("6.libcommond.so")
-    #cmd.gcc_command07("7.libringct_basicd.so")
-    #cmd.gcc_command08("8.libcheckpointsd.so")
-    #cmd.gcc_command09("9.libnetd.so")
-    #cmd.gcc_command10("10.librpc_based.so")
-    #cmd.gcc_command11("11.libdaemonizerd.so")
-    #cmd.gcc_command12("12.libdeviced.so")    #------------------------> object 2, not existed
-    #cmd.gcc_command13("13.libcryptonote_basicd.so")   #rpath-link
-    #cmd.gcc_command14("14.libringctd.so")
-    #cmd.gcc_command15("15.libmultisigd.so")
-    #cmd.gcc_command16("16.libblockchain_dbd.so")
-    #cmd.gcc_command17("17.libcryptonote_cored.so")
-    #cmd.gcc_command18("18.libp2pd.so")
-    #cmd.gcc_command19("19.libcryptonote_protocold.so")
-    #cmd.gcc_command20("20.librpcd.so")
-    #cmd.gcc_command21("21.libserializationd.so")
-    #cmd.gcc_command22("22.libdaemon_messagesd.so")
-    #cmd.gcc_command23("23.libdaemon_rpc_serverd.so")
-    #cmd.gcc_command_monero("libmonerod.so")
 
 
 
