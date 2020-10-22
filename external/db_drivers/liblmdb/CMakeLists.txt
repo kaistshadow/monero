@@ -41,7 +41,19 @@ midl.c)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_library(lmdb
+#Add Rule : This is 64bit Archtecture (amd64)
+set(ARCH_WIDTH "64")
+
+# This is a CMake built-in switch that concerns internal libraries
+set(BUILD_SHARED_LIBS ON)
+if (BUILD_SHARED_LIBS)
+  message(STATUS "Building internal libraries with position independent code")
+  add_definitions("-DBUILD_SHARED_LIBS")
+else()
+  message(STATUS "Building internal libraries as static")
+endif()
+  
+add_library(lmdb 
   ${lmdb_sources})
 target_link_libraries(lmdb
   PRIVATE
