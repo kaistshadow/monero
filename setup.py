@@ -31,7 +31,7 @@ def install_files(lists):
 
 def create_external_libs():
     # external libs are consist of subtrees('db_drivers','easylogging++'), submodues('unbound','miniupnp/miniupnpc','randomx') and the source code('rapidjson','trezor-common') used only for include   
-    modules = ['db_drivers','easylogging++','miniupnp/miniupnpc']      
+    modules = ['unbound','db_drivers','easylogging++','miniupnp/miniupnpc']      
     for module in modules:
         print("---------------------------------")
         print(" Start compile ...  -  %s  - " %(module))
