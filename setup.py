@@ -31,7 +31,7 @@ def install_files(lists):
 
 def create_external_libs():
     # external libs are consist of subtrees('db_drivers','easylogging++'), submodues('unbound','miniupnp/miniupnpc','randomx') and the source code('rapidjson','trezor-common') used only for include   
-    modules = ['unbound','db_drivers','easylogging++','miniupnp/miniupnpc']      
+    modules = ['db_drivers','miniupnp/miniupnpc']      
     for module in modules:
         print("---------------------------------")
         print(" Start compile ...  -  %s  - " %(module))
@@ -44,7 +44,7 @@ def create_external_libs():
         else:
             exec_shell_cmd("cd %s/%s && ./configure && make" % (WD+"/external", module))            
 
-    lists = ["./external/unbound/.libs/libunbound.so","./external/db_drivers/build/liblmdb/liblmdb.so","./external/easylogging++/build/libeasylogging.so","./external/randomx/build/librandomx.so","./external/miniupnp/miniupnpc/build/libminiupnpc.a"]
+    lists = ["./external/db_drivers/build/liblmdb/liblmdb.so","./external/randomx/build/librandomx.so","./external/miniupnp/miniupnpc/build/libminiupnpc.a"]
     install_files(lists)
 
 def create_static_libs():
@@ -88,6 +88,31 @@ def create_randomx():
     print(" Successfully ... ")
     print("----------------------------------------------------------------------------")
 
+def create_easylogging():
+    print("----------------------------------------------------------------------------")
+    print(" Start compile ... external libeasylogging.so.")
+    target = "static_txt/easyloggig.txt"
+    f = open(target,"r")
+    while True:
+        line = f.readline()
+        if not line : break
+        exec_shell_cmd(line)    
+    f.close()
+    print(" Successfully ... ")
+    print("----------------------------------------------------------------------------")   
+
+def create_unbound():
+    print("----------------------------------------------------------------------------")
+    print(" Start compile ... external libunbound.so.")
+    target = "static_txt/unbound.txt"
+    f = open(target,"r")
+    while True:
+        line = f.readline()
+        if not line : break
+        exec_shell_cmd(line)    
+    f.close()
+    print(" Successfully ... ")
+    print("----------------------------------------------------------------------------")       
 
 def create_shared_libs():    
     # In monerod, a total of 24 shared libraries are linked, 4 of which were previously installed as external libs.
@@ -182,35 +207,36 @@ if __name__ == '__main__':
     print ("-------------------------------------------------------------")
     print ("To compile monerod, the following file needs to be created.\n--1.Creating Object Files(6)\n--2.Creating Dependent Static libraries(4)\n--3.Creating Shared libraries(25)")
     print ("-------------------------------------------------------------")
-    exec_shell_cmd("git submodule update --init")
-    if not os.path.exists(LIBPAHTS):
-                exec_shell_cmd("cd %s && mkdir -p %s" % (WD, LIBPAHTS))
-    create_randomx()
-    create_six_objects()
-    create_external_libs()
-    create_static_libs()    
-
-    cmd.gcc_command03("3.libversion.so")
-    cmd.gcc_command04("4.libhardforksd.so")
-    cmd.gcc_command05("5.libcncryptod.so")
-    cmd.gcc_command06("6.libcommond.so") # transaction.h 
-    cmd.gcc_command07("7.libringct_basicd.so")
-    cmd.gcc_command08("8.libcheckpointsd.so")
-    cmd.gcc_command09("9.libnetd.so")
-    cmd.gcc_command10("10.librpc_based.so")
-    cmd.gcc_command11("11.libdaemonizerd.so")
-    cmd.gcc_command12("12.libdeviced.so")    #------------------------> object 2, not existed
-    cmd.gcc_command13("13.libcryptonote_basicd.so")   #rpath-link : 
-    cmd.gcc_command14("14.libringctd.so")
-    cmd.gcc_command15("15.libmultisigd.so")
-    cmd.gcc_command16("16.libblockchain_dbd.so")
-    cmd.gcc_command17("17.libcryptonote_cored.so")
-    cmd.gcc_command18("18.libp2pd.so")
-    cmd.gcc_command19("19.libcryptonote_protocold.so")
-    cmd.gcc_command20("20.librpcd.so")
-    cmd.gcc_command21("21.libserializationd.so")
-    cmd.gcc_command22("22.libdaemon_messagesd.so")
-    cmd.gcc_command23("23.libdaemon_rpc_serverd.so")
+    # exec_shell_cmd("git submodule update --init")
+    # if not os.path.exists(LIBPAHTS):
+    #             exec_shell_cmd("cd %s && mkdir -p %s" % (WD, LIBPAHTS))
+    create_unbound()
+    # create_easylogging()
+    # create_randomx()
+    # create_six_objects()
+    # create_external_libs()
+    # create_static_libs()    
+    # cmd.gcc_command03("3.libversion.so")
+    # cmd.gcc_command04("4.libhardforksd.so")
+    # cmd.gcc_command05("5.libcncryptod.so")
+    # cmd.gcc_command06("6.libcommond.so") # transaction.h 
+    # cmd.gcc_command07("7.libringct_basicd.so")
+    # cmd.gcc_command08("8.libcheckpointsd.so")
+    # cmd.gcc_command09("9.libnetd.so")
+    # cmd.gcc_command10("10.librpc_based.so")
+    # cmd.gcc_command11("11.libdaemonizerd.so")
+    # cmd.gcc_command12("12.libdeviced.so")    #------------------------> object 2, not existed
+    # cmd.gcc_command13("13.libcryptonote_basicd.so")   #rpath-link : 
+    # cmd.gcc_command14("14.libringctd.so")
+    # cmd.gcc_command15("15.libmultisigd.so")
+    # cmd.gcc_command16("16.libblockchain_dbd.so")
+    # cmd.gcc_command17("17.libcryptonote_cored.so")
+    # cmd.gcc_command18("18.libp2pd.so")
+    # cmd.gcc_command19("19.libcryptonote_protocold.so")
+    # cmd.gcc_command20("20.librpcd.so")
+    # cmd.gcc_command21("21.libserializationd.so")
+    # cmd.gcc_command22("22.libdaemon_messagesd.so")
+    # cmd.gcc_command23("23.libdaemon_rpc_serverd.so")
     cmd.gcc_command_monero("libmonerod.so")
 
 

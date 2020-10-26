@@ -4,7 +4,7 @@ import shutil
 import os
 
 a = './build/temp.linux-x86_64-2.7/libs'
-b = './../../../Install/openssl_1.1.0h/lib'
+b = '/home/mong/CLionProject/blockchain-sim/Install/openssl_1.1.0h/lib'
 abs_path = os.path.abspath(a)
 abs_openssl_path = os.path.abspath(b)
 WD = os.getcwd()
