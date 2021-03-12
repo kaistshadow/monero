@@ -26,7 +26,7 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-include_directories(SYSTEM ${OPENSSL_INCLUDE_DIR})
+include_directories(${OPENSSL_INCLUDE_DIR})
 
 set(common_sources
   base58.cpp
@@ -92,10 +92,12 @@ set(common_private_headers
 monero_private_headers(common
   ${common_private_headers})
 monero_add_library(common
-  ${common_sources}
-  ${common_headers}
-  ${common_private_headers}
-  DEPENDS generate_translations_header)
+        ${common_sources}
+        ${common_headers}
+        ${common_private_headers}
+        DEPENDS generate_translations_header)
+add_dependencies(common openssl_1.1.0h)
+
 target_link_libraries(common
   PUBLIC
     cncrypto

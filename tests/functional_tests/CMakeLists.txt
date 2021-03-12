@@ -75,5 +75,5 @@ else()
 endif()
 
 add_test(
-  NAME    check_missing_rpc_methods
-  COMMAND ${PYTHON_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/check_missing_rpc_methods.py" "${CMAKE_SOURCE_DIR}")
+        NAME check_missing_rpc_methods
+        COMMAND ${PYTHON_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/check_missing_rpc_methods.py" "${CMAKE_SOURCE_DIR}/external/monero/0.17.0.0dev")

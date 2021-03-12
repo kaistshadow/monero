@@ -5315,25 +5315,26 @@ mdb_env_setup_locks(MDB_env *env, MDB_name *fname, int mode, int *excl)
 #else	/* MDB_USE_POSIX_MUTEX: */
 		pthread_mutexattr_t mattr;
 
-		/* Solaris needs this before initing a robust mutex.  Otherwise
-		 * it may skip the init and return EBUSY "seems someone already
-		 * inited" or EINVAL "it was inited differently".
-		 */
-		memset(env->me_txns->mti_rmutex, 0, sizeof(*env->me_txns->mti_rmutex));
-		memset(env->me_txns->mti_wmutex, 0, sizeof(*env->me_txns->mti_wmutex));
+        /* Solaris needs this before initing a robust mutex.  Otherwise
+         * it may skip the init and return EBUSY "seems someone already
+         * inited" or EINVAL "it was inited differently".
+         */
+        memset(env->me_txns->mti_rmutex, 0, sizeof(*env->me_txns->mti_rmutex));
+        memset(env->me_txns->mti_wmutex, 0, sizeof(*env->me_txns->mti_wmutex));
 
-		if ((rc = pthread_mutexattr_init(&mattr)) != 0)
-			goto fail;
-		rc = pthread_mutexattr_setpshared(&mattr, PTHREAD_PROCESS_SHARED);
+        if ((rc = pthread_mutexattr_init(&mattr)) != 0)
+            goto fail;
+        // rc = pthread_mutexattr_setpshared(&mattr, PTHREAD_PROCESS_SHARED);
+        // not supported by shadow
 #ifdef MDB_ROBUST_SUPPORTED
-		if (!rc) rc = pthread_mutexattr_setrobust(&mattr, PTHREAD_MUTEX_ROBUST);
+        if (!rc) rc = pthread_mutexattr_setrobust(&mattr, PTHREAD_MUTEX_ROBUST);
 #endif
-		if (!rc) rc = pthread_mutex_init(env->me_txns->mti_rmutex, &mattr);
-		if (!rc) rc = pthread_mutex_init(env->me_txns->mti_wmutex, &mattr);
-		pthread_mutexattr_destroy(&mattr);
-		if (rc)
-			goto fail;
-#endif	/* _WIN32 || ... */
+        if (!rc) rc = pthread_mutex_init(env->me_txns->mti_rmutex, &mattr);
+        if (!rc) rc = pthread_mutex_init(env->me_txns->mti_wmutex, &mattr);
+        pthread_mutexattr_destroy(&mattr);
+        if (rc)
+            goto fail;
+#endif    /* _WIN32 || ... */
 
 		env->me_txns->mti_magic = MDB_MAGIC;
 		env->me_txns->mti_format = MDB_LOCK_FORMAT;

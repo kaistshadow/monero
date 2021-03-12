@@ -228,7 +228,7 @@ else()
 endif()
 
 list(INSERT CMAKE_MODULE_PATH 0
-  "${CMAKE_SOURCE_DIR}/cmake")
+        "${CMAKE_SOURCE_DIR}/external/monero/0.17.0.0dev/cmake")
 
 if (NOT DEFINED ENV{DEVELOPER_LOCAL_TOOLS})
   message(STATUS "Could not find DEVELOPER_LOCAL_TOOLS in env (not required)")
@@ -433,21 +433,29 @@ endif ()
 if (APPLE AND NOT IOS)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64 -fvisibility=default -std=c++11")
   if (NOT OPENSSL_ROOT_DIR)
-      EXECUTE_PROCESS(COMMAND brew --prefix openssl
-        OUTPUT_VARIABLE OPENSSL_ROOT_DIR
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
+    EXECUTE_PROCESS(COMMAND brew --prefix openssl
+            OUTPUT_VARIABLE OPENSSL_ROOT_DIR
+            OUTPUT_STRIP_TRAILING_WHITESPACE)
     message(STATUS "Using OpenSSL found at ${OPENSSL_ROOT_DIR}")
-  endif()
-endif()
+  endif ()
+endif ()
 
-find_package(OpenSSL REQUIRED)
+
+find_package(OpenSSL_1_1_0h REQUIRED)
+
+set(OPENSSL_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/openssl_1.1.0h/include")
+set(OPENSSL_CRYPTO_LIBRARY "${CMAKE_INSTALL_PREFIX}/openssl_1.1.0h/lib/libcrypto.so")
+set(OPENSSL_SSL_LIBRARY "${CMAKE_INSTALL_PREFIX}/openssl_1.1.0h/lib/libssl.so")
+set(OPENSSL_LIBRARIES "${OPENSSL_CRYPTO_LIBRARY};${OPENSSL_SSL_LIBRARY}")
+set(OPENSSL_VERSION "1.1.0h")
+
 message(STATUS "Using OpenSSL include dir at ${OPENSSL_INCLUDE_DIR}")
 include_directories(${OPENSSL_INCLUDE_DIR})
-if(STATIC AND NOT IOS)
-  if(UNIX)
+if (STATIC AND NOT IOS)
+  if (UNIX)
     set(OPENSSL_LIBRARIES "${OPENSSL_LIBRARIES};${CMAKE_DL_LIBS};${CMAKE_THREAD_LIBS_INIT}")
-  endif()
-endif()
+  endif ()
+endif ()
 
 find_package(HIDAPI)
 

@@ -134,7 +134,7 @@ if ( LibUSB_FOUND )
 
         try_compile(LibUSB_COMPILE_TEST_PASSED
                 ${CMAKE_BINARY_DIR}
-                "${CMAKE_SOURCE_DIR}/cmake/test-libusb-version.c"
+                "${CMAKE_SOURCE_DIR}/external/monero/0.17.0.0dev/cmake/test-libusb-version.c"
                 CMAKE_FLAGS
                     "-DINCLUDE_DIRECTORIES=${LibUSB_INCLUDE_DIRS}"
                     "-DLINK_DIRECTORIES=${LibUSB_LIBRARIES}"

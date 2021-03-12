@@ -87,12 +87,47 @@ target_link_libraries(daemon
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
     ${Boost_REGEX_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${ZMQ_LIB}
-    ${GNU_READLINE_LIBRARY}
-    ${EXTRA_LIBRARIES}
-    ${Blocks})
+        ${CMAKE_THREAD_LIBS_INIT}
+        ${ZMQ_LIB}
+        ${GNU_READLINE_LIBRARY}
+        ${EXTRA_LIBRARIES}
+        ${Blocks})
 set_property(TARGET daemon
-  PROPERTY
-    OUTPUT_NAME "monerod")
+        PROPERTY
+        OUTPUT_NAME "monerod")
 install(TARGETS daemon DESTINATION bin)
+
+monero_private_headers(shadow_monero_daemon
+        ${daemon_private_headers})
+monero_add_shadow_plugin(shadow_monero_daemon
+        ${daemon_sources}
+        ${daemon_headers}
+        ${daemon_private_headers})
+target_link_libraries(shadow_monero_daemon
+        PRIVATE
+        rpc
+        blockchain_db
+        cryptonote_core
+        cncrypto
+        common
+        p2p
+        cryptonote_protocol
+        daemonizer
+        serialization
+        daemon_rpc_server
+        ${EPEE_READLINE}
+        version
+        ${Boost_CHRONO_LIBRARY}
+        ${Boost_FILESYSTEM_LIBRARY}
+        ${Boost_PROGRAM_OPTIONS_LIBRARY}
+        ${Boost_REGEX_LIBRARY}
+        ${Boost_SYSTEM_LIBRARY}
+        ${CMAKE_THREAD_LIBS_INIT}
+        ${ZMQ_LIB}
+        ${GNU_READLINE_LIBRARY}
+        ${EXTRA_LIBRARIES}
+        ${Blocks})
+set_property(TARGET shadow_monero_daemon
+        PROPERTY
+        OUTPUT_NAME "monerod")
+install(TARGETS shadow_monero_daemon DESTINATION bin)

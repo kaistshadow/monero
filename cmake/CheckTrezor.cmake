@@ -91,7 +91,7 @@ endif()
 
 # Protobuf compilation test
 if(Protobuf_FOUND AND USE_DEVICE_TREZOR AND TREZOR_PYTHON)
-    execute_process(COMMAND ${Protobuf_PROTOC_EXECUTABLE} -I "${CMAKE_SOURCE_DIR}/cmake" -I "${Protobuf_INCLUDE_DIR}" "${CMAKE_SOURCE_DIR}/cmake/test-protobuf.proto" --cpp_out ${CMAKE_BINARY_DIR} RESULT_VARIABLE RET OUTPUT_VARIABLE OUT ERROR_VARIABLE ERR)
+    execute_process(COMMAND ${Protobuf_PROTOC_EXECUTABLE} -I "${CMAKE_SOURCE_DIR}/external/monero/0.17.0.0dev/cmake" -I "${Protobuf_INCLUDE_DIR}" "${CMAKE_SOURCE_DIR}/external/monero/0.17.0.0dev/cmake/test-protobuf.proto" --cpp_out ${CMAKE_BINARY_DIR} RESULT_VARIABLE RET OUTPUT_VARIABLE OUT ERROR_VARIABLE ERR)
     if(RET)
         message(STATUS "Protobuf test generation failed: ${OUT} ${ERR}")
     endif()
@@ -99,9 +99,9 @@ if(Protobuf_FOUND AND USE_DEVICE_TREZOR AND TREZOR_PYTHON)
     try_compile(Protobuf_COMPILE_TEST_PASSED
         "${CMAKE_BINARY_DIR}"
         SOURCES
-        "${CMAKE_BINARY_DIR}/test-protobuf.pb.cc"
-        "${CMAKE_SOURCE_DIR}/cmake/test-protobuf.cpp"
-        CMAKE_FLAGS
+            "${CMAKE_BINARY_DIR}/test-protobuf.pb.cc"
+            "${CMAKE_SOURCE_DIR}/external/monero/0.17.0.0dev/cmake/test-protobuf.cpp"
+            CMAKE_FLAGS
         "-DINCLUDE_DIRECTORIES=${Protobuf_INCLUDE_DIR};${CMAKE_BINARY_DIR}"
         "-DCMAKE_CXX_STANDARD=11"
         LINK_LIBRARIES ${Protobuf_LIBRARY}

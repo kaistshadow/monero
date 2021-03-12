@@ -56,18 +56,19 @@ namespace tools
 #ifdef __x86_64__
   uint64_t get_ticks_per_ns()
   {
-    uint64_t t0 = epee::misc_utils::get_ns_count(), t1;
-    uint64_t r0 = get_tick_count();
+      uint64_t t0 = epee::misc_utils::get_ns_count(), t1;
+      uint64_t r0 = get_tick_count();
 
-    while (1)
-    {
-      t1 = epee::misc_utils::get_ns_count();
-      if (t1 - t0 > 1*1000000000) break; // work one second
-    }
 
-    uint64_t r1 = get_tick_count();
-    uint64_t tpns256 = 256 * (r1 - r0) / (t1 - t0);
-    return tpns256 ? tpns256 : 1;
+//    while (1)
+//    {
+//      t1 = epee::misc_utils::get_ns_count();
+//      if (t1 - t0 > 1*1000000000) break; // work one second
+//    }
+
+      uint64_t r1 = get_tick_count();
+      uint64_t tpns256 = 256 * (r1 - r0) / (t1 - t0);
+      return tpns256 ? tpns256 : 1;
   }
 #endif
 

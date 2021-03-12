@@ -64,24 +64,43 @@ function (monero_add_executable name)
       ${ARGN})
 
   add_executable("${name}"
-    ${ARGN})
+          ${ARGN})
   target_link_libraries("${name}"
-    PRIVATE
-      ${EXTRA_LIBRARIES})
+          PRIVATE
+          ${EXTRA_LIBRARIES})
   set_property(TARGET "${name}"
-    PROPERTY
-      FOLDER "prog")
+          PROPERTY
+          FOLDER "prog")
   set_property(TARGET "${name}"
-    PROPERTY
-      RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+          PROPERTY
+          RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
   enable_stack_trace("${name}")
-endfunction ()
-
-function (monero_add_library name)
-    monero_add_library_with_deps(NAME "${name}" SOURCES ${ARGN})
 endfunction()
 
-function (monero_add_library_with_deps)
+function(monero_add_shadow_plugin name)
+  source_group("${name}"
+          FILES
+          ${ARGN})
+
+  add_shadow_plugin("${name}"
+          ${ARGN})
+  target_link_libraries("${name}"
+          PRIVATE
+          ${EXTRA_LIBRARIES})
+  set_property(TARGET "${name}"
+          PROPERTY
+          FOLDER "prog")
+  set_property(TARGET "${name}"
+          PROPERTY
+          RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+  enable_stack_trace("${name}")
+endfunction()
+
+function(monero_add_library name)
+  monero_add_library_with_deps(NAME "${name}" SOURCES ${ARGN})
+endfunction()
+
+function(monero_add_library_with_deps)
   cmake_parse_arguments(MONERO_ADD_LIBRARY "" "NAME" "DEPENDS;SOURCES" ${ARGN})
   source_group("${MONERO_ADD_LIBRARY_NAME}" FILES ${MONERO_ADD_LIBRARY_SOURCES})
 

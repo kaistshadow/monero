@@ -34,6 +34,7 @@ if(ANDROID)
   add_definitions("-DANDROID=1")
 endif()
 
+add_definitions(-DMDB_USE_ROBUST=0)
 
 set (lmdb_sources
 mdb.c

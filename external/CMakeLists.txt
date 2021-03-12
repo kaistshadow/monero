@@ -60,6 +60,7 @@ if(NOT UNBOUND_INCLUDE_DIR OR STATIC)
   # The unbound CMakeLists.txt can set it, since it's also needed for the
   # static OpenSSL libraries set up there after with target_link_libraries.
   add_subdirectory(unbound)
+  add_dependencies(unbound openssl_1.1.0h)
 
   set(UNBOUND_STATIC true PARENT_SCOPE)
   set(UNBOUND_INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/unbound/libunbound" PARENT_SCOPE)
