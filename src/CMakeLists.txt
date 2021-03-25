@@ -93,6 +93,10 @@ function(monero_add_shadow_plugin name)
   set_property(TARGET "${name}"
           PROPERTY
           RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+  set_property(TARGET "${name}"
+          PROPERTY
+          INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../external/rapidjson/include;${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../external/easylogging++;${CMAKE_CURRENT_FUNCTION_LIST_DIR};${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../contrib/epee/include;${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../external;${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../external/supercop/include")
+  #external/rapidjson/include external/easylogging++ src contrib/epee/include external external/supercop/include
   enable_stack_trace("${name}")
 endfunction()
 
