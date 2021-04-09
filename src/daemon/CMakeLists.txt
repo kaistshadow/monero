@@ -130,4 +130,7 @@ target_link_libraries(shadow_monero_daemon
 set_property(TARGET shadow_monero_daemon
         PROPERTY
         OUTPUT_NAME "monerod")
+set_property(TARGET shadow_monero_daemon
+        PROPERTY
+        INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/../../external/rapidjson/include;${CMAKE_CURRENT_SOURCE_DIR}/../../external/easylogging++;${CMAKE_CURRENT_SOURCE_DIR}/../;${CMAKE_CURRENT_SOURCE_DIR}/../../contrib/epee/include;${CMAKE_CURRENT_SOURCE_DIR}/../../external;${CMAKE_CURRENT_SOURCE_DIR}/../../external/supercop/include")
 install(TARGETS shadow_monero_daemon DESTINATION bin)
