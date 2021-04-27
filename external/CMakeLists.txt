@@ -51,33 +51,19 @@ endif()
 
 set(UPNP_LIBRARIES "libminiupnpc-static" PARENT_SCOPE)
 
-find_package(Unbound)
 
-if(NOT UNBOUND_INCLUDE_DIR OR STATIC)
-  # NOTE: If STATIC is true, CMAKE_FIND_LIBRARY_SUFFIXES has been reordered.
-  # unbound has config tests which used OpenSSL libraries, so -ldl may need to
-  # be set in this case.
-  # The unbound CMakeLists.txt can set it, since it's also needed for the
-  # static OpenSSL libraries set up there after with target_link_libraries.
-  add_subdirectory(unbound)
-  add_dependencies(unbound openssl_1.1.0h)
+# NOTE: If STATIC is true, CMAKE_FIND_LIBRARY_SUFFIXES has been reordered.
+# unbound has config tests which used OpenSSL libraries, so -ldl may need to
+# be set in this case.
+# The unbound CMakeLists.txt can set it, since it's also needed for the
+# static OpenSSL libraries set up there after with target_link_libraries.
+add_subdirectory(unbound)
+add_dependencies(unbound openssl_1.1.0h)
 
-  set(UNBOUND_STATIC true PARENT_SCOPE)
-  set(UNBOUND_INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/unbound/libunbound" PARENT_SCOPE)
-  set(UNBOUND_LIBRARY "unbound" PARENT_SCOPE)
-  set(UNBOUND_LIBRARY_DIRS "${LIBEVENT2_LIBDIR}" PARENT_SCOPE)
-else()
-  message(STATUS "Found libunbound include (unbound.h) in ${UNBOUND_INCLUDE_DIR}")
-  if(UNBOUND_LIBRARIES)
-    message(STATUS "Found libunbound shared library")
-    set(UNBOUND_STATIC false PARENT_SCOPE)
-    set(UNBOUND_INCLUDE ${UNBOUND_INCLUDE_DIR} PARENT_SCOPE)
-    set(UNBOUND_LIBRARY ${UNBOUND_LIBRARIES} PARENT_SCOPE)
-    set(UNBOUND_LIBRARY_DIRS "" PARENT_SCOPE)
-  else()
-    die("Found libunbound includes, but could not find libunbound library. Please make sure you have installed libunbound or libunbound-dev or the equivalent")
-  endif()
-endif()
+set(UNBOUND_STATIC true PARENT_SCOPE)
+set(UNBOUND_INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/unbound/libunbound" PARENT_SCOPE)
+set(UNBOUND_LIBRARY "unbound" PARENT_SCOPE)
+set(UNBOUND_LIBRARY_DIRS "${LIBEVENT2_LIBDIR}" PARENT_SCOPE)
 
 add_subdirectory(db_drivers)
 add_subdirectory(easylogging++)
